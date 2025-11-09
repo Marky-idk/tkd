@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-localize="title">TKD NOVA LEADERBOARD</title>
+    <title>TKD NOVA LEADERBOARD</title> 
     
     <style>
         /* --- THEME DEFINITIONS --- */
@@ -21,6 +21,9 @@
             --gold: #FFD700;
             --silver: #C0C0C0;
             --bronze: #CD7F32;
+            /* Rank Badge Color */
+            --rank-badge-bg: #DA291C; 
+            --rank-badge-text: #FFFFFF;
         }
 
         /* Red/Light Theme */
@@ -32,6 +35,9 @@
             --card-bg: #FFFFFF;
             --border-color: #ccc;
             --hover-color: #f0f0f0;
+            /* Rank Badge Color */
+            --rank-badge-bg: #000000; 
+            --rank-badge-text: #FFC300;
         }
 
         /* Status Colors (Same for both themes) */
@@ -194,6 +200,25 @@
             padding-right: 20px; 
         }
         
+        /* --- RANK BADGE STYLE (Used in Analysis H3 and Accolades) --- */
+        .rank-badge {
+            background-color: var(--rank-badge-bg);
+            color: var(--rank-badge-text);
+            font-size: 0.75em;
+            font-weight: 700;
+            padding: 3px 8px;
+            margin-left: 15px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--accent-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            display: inline-block; 
+            vertical-align: middle;
+            white-space: nowrap; /* Prevent badge text wrap */
+        }
+        /* --------------------------- */
+
+
         .stats-container {
             display: flex;
             align-items: center;
@@ -210,6 +235,8 @@
             border-radius: 3px;
             object-fit: cover;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            /* Used in h3 */
+            line-height: 1;
         }
         
         .status-badge {
@@ -241,7 +268,7 @@
         #fighter-detail {
             border: 1px solid var(--border-color);
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             opacity: 0; 
             transition: opacity 0.5s ease-in-out;
             min-height: 200px;
@@ -251,6 +278,13 @@
             border-color: #ddd;
         }
         
+        #fighter-name {
+            display: flex;
+            align-items: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
         .stat-line {
             display: flex;
             justify-content: space-between;
@@ -274,7 +308,23 @@
             padding-right: 5px;
         }
         
-        /* --- NEW: Probability Breakdown Styles --- */
+        /* --- Accolades Section Styling --- */
+        #accolades-section {
+            padding: 10px 0;
+            display: flex;
+            flex-wrap: wrap; /* Allow badges to wrap */
+            gap: 10px;
+            align-items: center;
+            min-height: 40px; /* Ensure space even if no badges */
+        }
+        
+        #accolades-section .no-badges {
+            font-style: italic;
+            color: #aaa;
+            font-size: 0.9em;
+        }
+        
+        /* --- Probability Breakdown Styles --- */
         #probability-breakdown {
             margin-top: 10px;
             padding: 10px;
@@ -289,7 +339,7 @@
         }
         
         #probability-breakdown.visible {
-            max-height: 120px; /* NEW: Fixed height when visible */
+            max-height: 120px; /* Fixed height when visible */
             opacity: 1;
             overflow-y: auto; /* Enable scroll if content exceeds 120px */
         }
@@ -298,7 +348,6 @@
             display: flex;
             justify-content: space-between;
             padding: 5px 0;
-            font-size: 0.9em;
             color: #ccc;
         }
         
@@ -449,8 +498,10 @@
                 font-size: 0.9em;
             }
             
-            #probability-score {
-                font-size: 1.4em;
+            .rank-badge { /* Smaller on mobile */
+                font-size: 0.65em;
+                padding: 3px 5px;
+                margin-left: 10px;
             }
         }
         
@@ -463,8 +514,8 @@
 <body data-theme="dark-theme">
 
     <header id="main-header">
-        <h1 data-localize="headerTitle">TKD Nova Leaderboard/h1>
-        <p data-localize="headerSubtitle">"Global" Rankings and Performance Analysis</p>
+        <h1>TKD Nova Leaderboard</h1>
+        <p data-localize="headerSubtitle">Global Rankings and Performance Analysis</p>
     </header>
 
     <main id="dashboard">
@@ -474,9 +525,18 @@
             <label for="division-filter" data-localize="filterDivision">Filter by Division:</label>
             <select id="division-filter">
                 <option value="All" data-localize="divisionAll">All Divisions</option>
-                <option value="Senior" data-localize="divisionSenior">Senior</option>
-                <option value="Junior" data-localize="divisionJunior">Junior</option>
-                <option value="Cadet" data-localize="divisionCadet">Cadet</option>
+                <option value="Senior" data-localize="divisionSenior">Senior (All)</option>
+                <option value="Senior-Light" data-localize="seniorLight">Senior - Light</option>
+                <option value="Senior-Middle" data-localize="seniorMiddle">Senior - Middle</option>
+                <option value="Senior-Heavy" data-localize="seniorHeavy">Senior - Heavy</option>
+                <option value="Junior" data-localize="divisionJunior">Junior (All)</option>
+                <option value="Junior-Light" data-localize="juniorLight">Junior - Light</option>
+                <option value="Junior-Middle" data-localize="juniorMiddle">Junior - Middle</option>
+                <option value="Junior-Heavy" data-localize="juniorHeavy">Junior - Heavy</option>
+                <option value="Cadet" data-localize="divisionCadet">Cadet (All)</option>
+                <option value="Cadet-Light" data-localize="cadetLight">Cadet - Light</option>
+                <option value="Cadet-Middle" data-localize="cadetMiddle">Cadet - Middle</option>
+                <option value="Cadet-Heavy" data-localize="cadetHeavy">Cadet - Heavy</option>
             </select>
             
             <label for="country-filter" data-localize="filterCountry">Filter by Country:</label> 
@@ -513,6 +573,10 @@
             
             <div id="fighter-detail" class="hidden">
                 <h3 id="fighter-name"></h3>
+                
+                <h4 data-localize="accoladesTitle" style="padding-top: 10px;">👑 Elite Status & Accolades</h4>
+                <div id="accolades-section">
+                    </div>
                 
                 <div class="stat-line"><p><strong data-localize="statStatus">Status:</strong></p><p id="fighter-status"></p></div>
                 <div class="stat-line"><p><strong data-localize="statDivision">Division:</strong></p><p id="fighter-division"></p></div>
@@ -555,15 +619,26 @@
 
             // --- LOCALIZATION DATA ---
             const localizationData = {
-                'title': {'en': 'Taekwondo Fighter Analysis | Data Inspector', 'ro': 'Analiza Luptătorilor Taekwondo | Inspector de Date', 'ru': 'Анализ Бойцов Тхэквондо | Инспектор Данных'},
-                'headerTitle': {'en': 'Taekwondo Elite Competitor Tracker', 'ro': 'Urmărirea Competiției Elitelor Taekwondo', 'ru': 'Трекер Элитных Соревнователей Тхэквондо'},
                 'headerSubtitle': {'en': 'Global Rankings and Performance Analysis', 'ro': 'Clasamente Globale și Analiza Performanței', 'ru': 'Мировые Рейтинги и Анализ Производительности'},
                 
                 'filterDivision': {'en': 'Filter by Division:', 'ro': 'Filtrare după Divizie:', 'ru': 'Фильтр по Дивизиону:'},
                 'divisionAll': {'en': 'All Divisions', 'ro': 'Toate Diviziile', 'ru': 'Все Дивизионы'},
-                'divisionSenior': {'en': 'Senior', 'ro': 'Senior', 'ru': 'Сеньор'},
-                'divisionJunior': {'en': 'Junior', 'ro': 'Junior', 'ru': 'Юниор'},
-                'divisionCadet': {'en': 'Cadet', 'ro': 'Cadet', 'ru': 'Кадет'},
+                
+                // Detailed Division Localization
+                'divisionSenior': {'en': 'Senior (All)', 'ro': 'Senior (Toți)', 'ru': 'Сеньор (Все)'},
+                'seniorLight': {'en': 'Senior - Light', 'ro': 'Senior - Ușoară', 'ru': 'Сеньор - Легкий'},
+                'seniorMiddle': {'en': 'Senior - Middle', 'ro': 'Senior - Mijlocie', 'ru': 'Сеньор - Средний'},
+                'seniorHeavy': {'en': 'Senior - Heavy', 'ro': 'Senior - Greu', 'ru': 'Сеньор - Тяжелый'},
+                
+                'divisionJunior': {'en': 'Junior (All)', 'ro': 'Junior (Toți)', 'ru': 'Юниор (Все)'},
+                'juniorLight': {'en': 'Junior - Light', 'ro': 'Junior - Ușoară', 'ru': 'Юниор - Легкий'},
+                'juniorMiddle': {'en': 'Junior - Middle', 'ro': 'Junior - Mijlocie', 'ru': 'Юниор - Средний'},
+                'juniorHeavy': {'en': 'Junior - Heavy', 'ro': 'Junior - Greu', 'ru': 'Юниор - Тяжелый'},
+                
+                'divisionCadet': {'en': 'Cadet (All)', 'ro': 'Cadet (Toți)', 'ru': 'Кадет (Все)'},
+                'cadetLight': {'en': 'Cadet - Light', 'ro': 'Cadet - Ușoară', 'ru': 'Кадет - Легкий'},
+                'cadetMiddle': {'en': 'Cadet - Middle', 'ro': 'Cadet - Mijlocie', 'ru': 'Кадет - Средний'},
+                'cadetHeavy': {'en': 'Cadet - Heavy', 'ro': 'Cadet - Greu', 'ru': 'Кадет - Тяжелый'},
                 
                 'filterCountry': {'en': 'Filter by Country:', 'ro': 'Filtrare după Țară:', 'ru': 'Фильтр по Стране:'},
                 'countryAll': {'en': 'All Countries', 'ro': 'Toate Țările', 'ru': 'Все Страны'},
@@ -605,6 +680,14 @@
                 'historyYear': {'en': 'Year', 'ro': 'An', 'ru': 'Год'},
                 'noHistory': {'en': 'No competition history recorded.', 'ro': 'Niciun istoric al competițiilor înregistrat.', 'ru': 'История соревнований не записана.'},
                 'winPercentLabel': {'en': 'Win %:', 'ro': 'Rata Câștigului %:', 'ru': 'Процент Побед %:'},
+                
+                // RANK BADGE LOCALIZATION
+                'accoladesTitle': {'en': '👑 Elite Status & Accolades', 'ro': '👑 Statut Elite și Recunoașteri', 'ru': '👑 Элитный Статус и Награды'},
+                'noAccolades': {'en': 'No current #1 rankings achieved.', 'ro': 'Niciun clasament #1 actual obținut.', 'ru': 'Текущих рейтингов #1 не получено.'},
+                'badgeOverall': {'en': 'WORLD #1', 'ro': '#1 GLOBAL', 'ru': '#1 МИР'},
+                'badgeCountry': {'en': 'COUNTRY #1', 'ro': '#1 ȚARĂ', 'ru': '#1 СТРАНА'},
+                'badgeDivision': {'en': '#1 DIVISION', 'ro': '#1 DIVIZIE', 'ru': '#1 ДИВИЗИОН'},
+                'badgeCategory': {'en': '#1 CATEGORY', 'ro': '#1 CATEGORIE', 'ru': '#1 КАТЕГОРИЯ'}
             };
             
             let currentLang = 'en';
@@ -673,28 +756,23 @@
                 return wmv;
             }
             
-            // --- NEW: Next Match Win Probability Calculation (returns breakdown) ---
+            // --- Next Match Win Probability Calculation ---
             function calculateWinProbability(fighter) {
                 const winPercent = calculateWinPercentage(fighter.winRatio);
                 const wmv = calculateWeightedMedalValue(fighter.competition_history);
                 
-                // Normalizing WMV (Assume max WMV possible in this dataset is ~40, set max possible to 50 for scaling)
                 const MAX_WMV = 50; 
                 const normalizedWmv = Math.min(wmv, MAX_WMV) / MAX_WMV; 
                 
-                // Define weights for the final score
                 const WIN_RATIO_WEIGHT = 0.8;
                 const WMV_WEIGHT = 0.2;
                 
-                // Calculate contributions
                 const wmvContribution = normalizedWmv * WMV_WEIGHT * 100;
                 const ratioContribution = winPercent * WIN_RATIO_WEIGHT;
                 
-                // Total probability (0-100)
                 let unadjustedTotal = ratioContribution + wmvContribution;
                 let probability = unadjustedTotal;
                 
-                // Clamp the result between 10 and 95 (to avoid 0% or 100% certainty)
                 probability = Math.min(Math.max(probability, 10), 95);
 
                 return {
@@ -704,13 +782,46 @@
                     unadjustedTotal: unadjustedTotal.toFixed(1)
                 }; 
             }
+            
+            // --- Function to check if a fighter is #1 in specific contexts ---
+            function getFighterRanks(fighterId) {
+                const fighter = fighters.find(f => f.id === fighterId);
+                if (!fighter) return { isOverall: false, isCountry: false, isDivision: false, isCategory: false };
+                
+                // Helper to sort and check the #1 position
+                const isRankOne = (list) => {
+                    if (list.length === 0) return false;
+                    list.sort((a, b) => calculateWinPercentage(b.winRatio) - calculateWinPercentage(a.winRatio));
+                    return list[0].id === fighterId;
+                };
+                
+                const ranks = {};
 
+                // 1. Overall #1
+                ranks.isOverall = isRankOne(fighters);
 
-            // --- 1. Taekwondo Fighter Data ---
+                // 2. Country #1
+                const countryFighters = fighters.filter(f => f.country === fighter.country);
+                ranks.isCountry = isRankOne(countryFighters);
+                
+                // 3. Division #1 (e.g., Senior, Junior, Cadet)
+                const divisionFighters = fighters.filter(f => f.division === fighter.division);
+                ranks.isDivision = isRankOne(divisionFighters);
+
+                // 4. Detailed Category #1 (e.g., Senior-Light)
+                const categoryFighters = fighters.filter(f => 
+                    f.division === fighter.division && f.weight_category === fighter.weight_category
+                );
+                ranks.isCategory = isRankOne(categoryFighters);
+                
+                return ranks;
+            }
+
+            // --- 1. Taekwondo Fighter Data (UPDATED with weight_category) ---
             let fighters = [
                 {
                     id: 1, name: "Caraman Mark", country: "Moldova", division: "Senior",
-                    winRatio: "6-0", weight: "-57kg", status: "Coach",
+                    winRatio: "6-0", weight_class_detailed: "-57kg", weight_category: "Light", status: "Coach",
                     competition_history: [
                         { name: "Mini 7-B Grand Open", place: "1st place", year: 2025, difficulty: 8 }, 
                         { name: "Mini 7-B Grand Series", place: "1st place", year: 2025, difficulty: 5 }
@@ -718,78 +829,77 @@
                 },
                 {
                     id: 2, name: "David Lupu", country: "Russia", division: "Junior",
-                    winRatio: "1-1", weight: "-57kg", status: "Coach",
+                    winRatio: "1-1", weight_class_detailed: "-57kg", weight_category: "Light", status: "Coach",
                     competition_history: [
                         { name: "Mini 7-B Grand Series", place: "2nd place", year: 2025, difficulty: 5 }
                     ]
                 },
                 {
                     id: 3, name: "Leu Alexandru", country: "Romania", division: "Junior",
-                    winRatio: "3-0", weight: "-55kg", status: "Active",
+                    winRatio: "3-0", weight_class_detailed: "-55kg", weight_category: "Light", status: "Active",
                     competition_history: [
                         { name: "Autumn Fights Open", place: "1st place", year: 2025, difficulty: 2 } 
                     ]
                 },
                 {
                     id: 4, name: "Tihon Branzanu", country: "Italy", division: "Junior",
-                    winRatio: "2-1", weight: "-55kg", status: "Active",
+                    winRatio: "2-1", weight_class_detailed: "-55kg", weight_category: "Light", status: "Active",
                     competition_history: [
-                        { name: "Autumn Fights Open", place: "2nd place", year: 2025, difficulty: 2 }, 
-                        { name: "Global Open Challenge", place: "3rd place", year: 2024, difficulty: 6 } 
+                        { name: "Autumn Fights Open", place: "2nd place", year: 2025, difficulty: 2 }
                     ]
                 },
                 {
                     id: 5, name: "Gabi Balaban", country: "India", division: "Cadet",
-                    winRatio: "1-1", weight: "-55kg", status: "Active",
+                    winRatio: "1-1", weight_class_detailed: "-55kg", weight_category: "Light", status: "Active",
                     competition_history: [
                         { name: "Autumn Fights Open", place: "3rd place", year: 2025, difficulty: 2 } 
                     ]
                 },
                 {
                     id: 6, name: "Sementov Vladimir", country: "Russia", division: "Senior",
-                    winRatio: "0-0", weight: "+55kg", status: "Active",
+                    winRatio: "0-0", weight_class_detailed: "+55kg", weight_category: "Heavy", status: "Active",
                     competition_history: [
                         { name: "N/A", place: "N/A", year: 2025, difficulty: 0 }
                     ]
                 },
                 {
                     id: 7, name: "Volchivski Kiril", country: "Irland", division: "Cadet",
-                    winRatio: "0-0", weight: "-55kg", status: "Active",
+                    winRatio: "0-0", weight_class_detailed: "-55kg", weight_category: "Light", status: "Active",
                     competition_history: [
                         { name: "N/A", place: "N/A", year: 2025, difficulty: 0 }
                     ]
                 },
                 {
                     id: 8, name: "Frunza Fabian", country: "UK", division: "Senior",
-                    winRatio: "0-0", weight: "+55kg", status: "Active",
+                    winRatio: "0-0", weight_class_detailed: "+55kg", weight_category: "Heavy", status: "Active",
                     competition_history: [
                         { name: "N/A", place: "N/A", year: 2025, difficulty: 0 }
                     ]
                 },
                 {
-                    id: 9, name: "Papanaga Nicolae", country: "Italy", division: "Junior",
-                    winRatio: "0-0", weight: "+55kg", status: "Active",
+                    id: 9, name: "Papanaga Nicolae", country: "Italy", division: "Cadet",
+                    winRatio: "0-0", weight_class_detailed: "+55kg", weight_category: "Heavy", status: "Active",
                     competition_history: [
                         { name: "N/A", place: "N/A", year: 2025, difficulty: 0 }
                     ]
                 },
                 {
                     id: 10, name: "Boescu Daniel", country: "Romania", division: "Junior",
-                    winRatio: "0-0", weight: "-55kg", status: "Active",
+                    winRatio: "0-0", weight_class_detailed: "-55kg", weight_category: "Light", status: "Active",
                     competition_history: [
                         { name: "N/A", place: "N/A", year: 2025, difficulty: 0 }
                     ]
                 },
                 {
                     id: 11, name: "Catana Gheorghe", country: "Moldova", division: "Cadet",
-                    winRatio: "1-1", weight: "+55kg", status: "Coach",
+                    winRatio: "1-1", weight_class_detailed: "+55kg", weight_category: "Heavy", status: "Coach",
                     competition_history: [
                         { name: "Mini 7-B Grand Series", place: "3rd place", year: 2025, difficulty: 5 } 
                     ]
                 },
                 {
                     id: 12, name: "Lozinschi Bogdan-Eric", country: "Romania", division: "Senior",
-                    winRatio: "0-0", weight: "+55kg", status: "Active",
+                    winRatio: "0-2", weight_class_detailed: "+55kg", weight_category: "Heavy", status: "Active",
                     competition_history: [
                         { name: "Autumn Fights Open", place: "4th Place", year: 2025, difficulty: 2 }
                     ]
@@ -807,6 +917,7 @@
             const leaderboardHeading = document.getElementById('leaderboard-heading');
             const breakdownToggle = document.getElementById('breakdown-toggle');
             const probabilityBreakdown = document.getElementById('probability-breakdown');
+            const accoladesSection = document.getElementById('accolades-section');
             
             
             // Function to populate the Country Filter dropdown
@@ -842,7 +953,7 @@
                 // Re-render leaderboard to update dynamic headings
                 renderLeaderboard();
                 
-                // If a fighter is currently displayed, refresh the analysis view to update ratio labels
+                // If a fighter is currently displayed, refresh the analysis view to update labels and badges
                 if (!fighterDetail.classList.contains('hidden') && fighterDetail.getAttribute('data-current-fighter')) {
                      const currentId = parseInt(fighterDetail.getAttribute('data-current-fighter'));
                      displayFighterAnalysis(currentId);
@@ -862,24 +973,40 @@
             function renderLeaderboard() {
                 leaderboardList.innerHTML = ''; 
                 
-                const selectedDivision = divisionFilter.value;
+                const selectedFilter = divisionFilter.value;
                 const selectedCountry = countryFilter.value; 
 
                 let filteredFighters = fighters;
                 
                 // 3a. Apply Filters
-                if (selectedDivision !== 'All') {
-                    filteredFighters = filteredFighters.filter(f => f.division === selectedDivision);
+                
+                if (selectedFilter !== 'All') {
+                    // Check if filter is detailed (e.g., "Senior-Light")
+                    if (selectedFilter.includes('-')) {
+                        const [division, category] = selectedFilter.split('-');
+                        filteredFighters = filteredFighters.filter(f => 
+                            f.division === division && f.weight_category === category
+                        );
+                        // Update heading for detailed filter
+                        const localKey = division.toLowerCase() + category;
+                        leaderboardHeading.innerHTML = `🏆 ${localizationData[localKey][currentLang]} ${localizationData.analysisHeading[currentLang]}`;
+                    } else {
+                        // Filter by Division only (e.g., "Senior")
+                        filteredFighters = filteredFighters.filter(f => f.division === selectedFilter);
+                        leaderboardHeading.innerHTML = `🏆 ${selectedFilter} ${localizationData.analysisHeading[currentLang]}`;
+                    }
                 }
                 
                 if (selectedCountry !== 'All') {
                     filteredFighters = filteredFighters.filter(f => f.country === selectedCountry);
-                    leaderboardHeading.innerHTML = `🌍 ${selectedCountry} ${localizationData.filterCountry[currentLang]}`; 
-                } else if (selectedDivision !== 'All') {
-                    leaderboardHeading.innerHTML = `🏆 ${selectedDivision} ${localizationData.analysisHeading[currentLang]}`;
-                } else {
+                    // Adjust heading to reflect country filter (overwrites division if needed)
+                    let baseTitle = selectedFilter === 'All' ? localizationData.divisionAll[currentLang] : divisionFilter.options[divisionFilter.selectedIndex].textContent;
+                    leaderboardHeading.innerHTML = `🌍 ${selectedCountry} - ${baseTitle}`; 
+                } else if (selectedFilter === 'All') {
+                    // Default heading if no filters applied
                     leaderboardHeading.innerHTML = localizationData.leaderboardHeading[currentLang];
                 }
+
 
                 
                 // 3b. Sort by Win Percentage
@@ -923,7 +1050,7 @@
                 });
             }
             
-            // --- 4. Single Fighter Detail View (Updated with Breakdown) ---
+            // --- 4. Single Fighter Detail View (UPDATED with Accolades Section) ---
             function displayFighterAnalysis(fighterId) {
                 const fighter = fighters.find(f => f.id === fighterId);
                 if (!fighter) return;
@@ -934,14 +1061,53 @@
                 fighterDetail.setAttribute('data-current-fighter', fighterId); 
                 
                 setTimeout(() => {
-                    // Populate Details
-                    document.getElementById('fighter-name').innerHTML = `${getFlagImgTag(fighter.country)} ${fighter.name}`;
+                    
+                    // 4a. Check Ranks and Prepare Badges
+                    const ranks = getFighterRanks(fighter.id);
+                    const badges = [];
+                    
+                    // Add badges with a priority score (lower is higher priority)
+                    if (ranks.isOverall) {
+                         badges.push({ key: 'badgeOverall', priority: 1 });
+                    }
+                    if (ranks.isCategory) {
+                        badges.push({ key: 'badgeCategory', priority: 2 });
+                    }
+                    if (ranks.isDivision) {
+                        badges.push({ key: 'badgeDivision', priority: 3 });
+                    }
+                    if (ranks.isCountry) {
+                        badges.push({ key: 'badgeCountry', priority: 4 });
+                    }
+                    
+                    // Sort badges by priority (best to worst)
+                    badges.sort((a, b) => a.priority - b.priority);
+
+                    let badgesHtml = '';
+                    if (badges.length > 0) {
+                        badges.forEach(badge => {
+                            const text = localizationData[badge.key][currentLang];
+                            badgesHtml += `<span class="rank-badge">${text}</span>`;
+                        });
+                    } else {
+                        badgesHtml = `<p class="no-badges">${localizationData.noAccolades[currentLang]}</p>`;
+                    }
+                    
+                    // Render Accolades Section
+                    accoladesSection.innerHTML = badgesHtml;
+                    
+                    
+                    // 4b. Populate Details
+                    document.getElementById('fighter-name').innerHTML = `
+                        ${getFlagImgTag(fighter.country)} 
+                        ${fighter.name}
+                    `;
                     
                     const statusBadge = `<span class="status-badge ${fighter.status}">${fighter.status}</span>`;
                     document.getElementById('fighter-status').innerHTML = statusBadge;
 
-                    document.getElementById('fighter-division').textContent = fighter.division;
-                    document.getElementById('weight-class').textContent = fighter.weight;
+                    document.getElementById('fighter-division').textContent = `${fighter.division} (${fighter.weight_category})`;
+                    document.getElementById('weight-class').textContent = fighter.weight_class_detailed; 
                     document.getElementById('country-display').textContent = fighter.country;
                     
                     // Display Win/Loss Ratio
@@ -953,7 +1119,7 @@
                     const wmv = calculateWeightedMedalValue(fighter.competition_history);
                     document.getElementById('weighted-medal-score').textContent = wmv.toFixed(0); 
                     
-                    // Calculate NEW Win Probability and Breakdown
+                    // Calculate Win Probability and Breakdown
                     const probabilityData = calculateWinProbability(fighter);
                     document.getElementById('probability-score').textContent = `${probabilityData.finalProbability}%`;
                     
@@ -985,7 +1151,7 @@
                     historyBody.innerHTML = '';
                     
                     // Handle "no competitions" case specifically
-                    if (fighter.competition_history.length === 1 && fighter.competition_history[0].name === "N/A") {
+                    if (fighter.competition_history.length === 0 || (fighter.competition_history.length === 1 && fighter.competition_history[0].name === "N/A")) {
                         historyBody.innerHTML = `<tr><td colspan="3" style="text-align: center; font-style: italic;">${localizationData.noHistory[currentLang]}</td></tr>`;
                     } else {
                         fighter.competition_history.forEach(event => {
@@ -1019,7 +1185,7 @@
                 }
             });
             
-            // Re-render when Division changes
+            // Re-render when filters change
             divisionFilter.addEventListener('change', () => {
                 countryFilter.value = 'All'; // Reset country filter when division changes
                 renderLeaderboard();
@@ -1027,7 +1193,6 @@
                 fighterDetail.classList.add('hidden');
             });
             
-            // Re-render when Country changes
             countryFilter.addEventListener('change', () => {
                 divisionFilter.value = 'All'; // Reset division filter when country changes
                 renderLeaderboard();
